@@ -1,0 +1,107 @@
+# Mouse — .gitignore
+# Multi-language project with agent infrastructure
+
+# ── Python ──────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# ── Rust ────────────────────────────────────
+target/
+Cargo.lock
+*.rs.bk
+
+# ── TypeScript / Node ───────────────────────
+node_modules/
+*.tsbuildinfo
+.next/
+dist/
+.yarn/
+.pnp.*
+
+# ── C++ / CMake ─────────────────────────────
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dSYM/
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# ── CUDA ────────────────────────────────────
+*.ptx
+*.cubin
+*.fatbin
+
+# ── Environment ─────────────────────────────
+.env
+.env.local
+.env.*.local
+*.env
+
+# ── Editors / IDE ───────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-*
+
+# ── OS ──────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+[Bb]in
+[Ss]cript
+*.tmp
+*.temp
+*.log
+
+# ── Agent / AI ──────────────────────────────
+.agentcache/
+.ai_cache/
+
+# ── Conda ───────────────────────────────────
+.conda/
+
+# ── PHP ─────────────────────────────────────
+vendor/
+composer.lock
+
+# ── Data ────────────────────────────────────
+Data/*
+!Data/.gitkeep

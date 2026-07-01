@@ -1,0 +1,25 @@
+[package]
+name = "mouse"
+version = "0.1.0"
+edition = "2024"
+description = "A simple computer vision cursor — Rust helpers"
+authors = ["MCHIGM"]
+license = "MIT"
+
+# Cross-platform: macOS (aarch64) + Windows (x86-64)
+# Build: cargo build
+# Build for Windows: cargo build --target x86_64-pc-windows-msvc
+
+[dependencies]
+# Add dependencies as needed
+# Example:
+# image = "0.25"
+# xcap = "0.3"       # screen capture
+# opencv = "0.92"    # computer vision
+
+[dev-dependencies]
+
+[features]
+default = []
+apple-gpu = []       # Metal / Apple Silicon GPU support
+nvidia-gpu = []      # CUDA / Nvidia GPU support
