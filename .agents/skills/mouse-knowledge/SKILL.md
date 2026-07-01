@@ -24,6 +24,7 @@ When activated, scan and index these information sources in order of priority:
 | General Profile | `AGENT_PROFILE.md` | Maintainer, conventions, lifecycle |
 | Agent Instructions | `GETTING_STARTED.md` | Build commands, tech stack, structure |
 | Workspace AI | `AI/AGENT_PROFILE.md` | Toolchain, jurisdiction, agent rules |
+| Skills Index | `.agents/skills/` | Project-local Zed agent skills |
 
 ### Directory Context (read relevant one)
 
@@ -46,6 +47,18 @@ When activated, scan and index these information sources in order of priority:
 | PHP | `src/` | `index.phtml` |
 | Assembly | `Source/ASM/` | *(empty)* |
 | C++ | `Source/C++/` | `CMakeLists.txt` |
+
+### Skills (Agent Automation)
+
+| Skill | Path | What it does |
+|-------|------|-------------|
+| mouse-build | `.agents/skills/mouse-build/` | Build all components (Python, Rust, C++) for macOS & Windows |
+| mouse-test | `.agents/skills/mouse-test/` | Run tests across all languages |
+| mouse-lint | `.agents/skills/mouse-lint/` | Lint and format all code |
+| mouse-cross | `.agents/skills/mouse-cross/` | Cross-compile and verify for Windows |
+| mouse-dev | `.agents/skills/mouse-dev/` | Full dev loop — watch, rebuild, test |
+| mouse-knowledge | `.agents/skills/mouse-knowledge/` | RAG-inspired knowledge management |
+| mouse-release | `.agents/skills/mouse-release/` | Update docs, commit, push, create PR |
 
 ## How to Answer Questions
 

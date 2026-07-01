@@ -32,7 +32,7 @@ The goal is to compare, combine, and learn from both approaches across two hardw
 |----------|---------|-----------|------|
 | Python | 3.14+ | `mamba` (env) + `uv` (pip) | Core CV logic, agent control |
 | Rust | 1.95+ (stable) | `rustup` + `cargo` | Performance helpers |
-| TypeScript | — | `bun` (primary) / `node` (fallback) | Frontend/web |
+| TypeScript | — | `bun` (primary) / `node` (fallback) | Creating the mouse |
 | C++ | C++20 | Clang 22+ / MSVC + `cmake` 4.3+ | GPU interop, CUDA |
 | Assembly | ARMv8 / x86-64 | Inline (via C++/Rust) | GPU-level capture |
 | PHP | 8.5+ | `php` | PHTML templates |
@@ -176,7 +176,8 @@ Mouse/
 │   ├── mouse-lint/         # Lint & format all code
 │   ├── mouse-cross/        # Cross-compile for Windows
 │   ├── mouse-dev/          # Full dev loop with watchers
-│   └── mouse-knowledge/    # RAG-inspired knowledge index
+│   ├── mouse-knowledge/    # RAG-inspired knowledge index
+│   └── mouse-release/      # Update docs, commit, push, create PR
 │
 ├── AGENT_PROFILE.md        # General conventions & maintainer info
 ├── Cargo.toml              # Rust project config
@@ -262,6 +263,62 @@ These Zed agent skills are available in this project:
 | `mouse-cross` | Verify Windows cross-compilation | "check Windows compatibility" |
 | `mouse-dev` | Full dev loop with file watchers | "start developing" / "dev mode" |
 | `mouse-knowledge` | RAG-style codebase Q&A | "what does X do?" / "where is Z?" |
+| `mouse-release` | Update docs & create GitHub PR | "release changes" / "update README and PR" |
+
+### How to Use Agents & Skills
+
+Zed's AI agent automatically detects which skill to load based on what you say. **You don't need to type skill names** — just say what you want in natural language.
+
+#### Triggering Skills
+
+| You say... | Agent loads... | What happens |
+|-----------|----------------|-------------|
+| "build the project" | `mouse-build` | Builds Rust, C++, Python — reports pass/fail per component |
+| "run the tests" | `mouse-test` | Runs `cargo test` + `pytest` + `ctest` — reports results |
+| "lint my code" or "format everything" | `mouse-lint` | Runs ruff, clippy, clang-format across all source |
+| "does this compile on Windows?" | `mouse-cross` | Cross-compiles Rust for `x86_64-pc-windows-msvc`, checks CMake |
+| "start dev mode" or "watch my files" | `mouse-dev` | Sets up file watchers, rebuilds on change, runs tests |
+| "what does the Python module do?" or "where is the CUDA code?" | `mouse-knowledge` | Searches READMEs, profiles, source code — returns a knowledge card |
+| "update the README and make a PR" | `mouse-release` | Scans for changes, updates docs, commits, pushes, creates PR |
+
+#### Manual Invocation
+
+If you want to be explicit (e.g., for scripting or clarity), use the skill name with `@`:
+
+```
+@mouse-build Build everything and tell me if the Windows target compiles too
+@mouse-knowledge Explain the dual-approach architecture
+@mouse-release Update README with the new CUDA support and open a PR
+```
+
+You can also chain them together:
+
+```
+"Lint the code, run all tests, and if everything passes, create a release PR"
+# → mouse-lint → mouse-test → mouse-release (if all green)
+```
+
+#### What Skills Know
+
+Each skill draws from specific project knowledge files:
+
+| Skill | Reads these files |
+|-------|------------------|
+| All | `GETTING_STARTED.md`, `AGENT_PROFILE.md` |
+| `mouse-dev` / `mouse-build` / `mouse-cross` | `Cargo.toml`, `CMakeLists.txt`, `rust-toolchain.toml`, `.cargo/config.toml` |
+| `mouse-test` / `mouse-lint` | `pyproject.toml`, `rust-toolchain.toml`, per-directory `AGENT_PROFILE.md` |
+| `mouse-knowledge` | All `README.txt`, all `AGENT_PROFILE.md`, `AI/VISION.md`, all source code |
+| `mouse-release` | `README.md`, `GETTING_STARTED.md`, git history, GitHub remote config |
+
+#### Adding New Skills
+
+Skills are plain Markdown files in `.agents/skills/<name>/SKILL.md`. To create one:
+
+```
+@create-skill Help me build a skill that auto-generates release notes from git log
+```
+
+The agent will scaffold the directory, write the `SKILL.md` with frontmatter, and guide you through customizing the instructions. Skills can include templates, examples, and reference files in their directory.
 
 ---
 
