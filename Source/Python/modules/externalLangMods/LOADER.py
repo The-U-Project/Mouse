@@ -418,3 +418,206 @@ class _CTypesNativeModule(NativeModule):
         self._exports.clear()
         self._loaded = False
         logger.debug("Unloaded native module '%s'", self._meta.name)
+
+
+# ---------------------------------------------------------------------------
+# Mouse Core module registration
+# ---------------------------------------------------------------------------
+
+_MOUSE_CORE_EXPORTS: list[FunctionSignature] = [
+    # ── Port reservation ─────────────────────────────
+    FunctionSignature(
+        name="mouse_reserve_port",
+        arg_count=1,
+        restype=ctypes.c_int,
+        argtypes=[ctypes.c_int],
+    ),
+    FunctionSignature(
+        name="mouse_release_port",
+        arg_count=1,
+        restype=ctypes.c_int,
+        argtypes=[ctypes.c_int],
+    ),
+    FunctionSignature(
+        name="mouse_get_stream_port",
+        arg_count=0,
+        restype=ctypes.c_int,
+    ),
+    FunctionSignature(
+        name="mouse_reserve_port_block",
+        arg_count=2,
+        restype=ctypes.POINTER(ctypes.c_int),
+        argtypes=[ctypes.c_int, ctypes.POINTER(ctypes.c_int)],
+    ),
+    FunctionSignature(
+        name="mouse_free_ports",
+        arg_count=1,
+        restype=None,
+        argtypes=[ctypes.POINTER(ctypes.c_int)],
+    ),
+    # ── Display analyzer ─────────────────────────────
+    FunctionSignature(
+        name="mouse_display_analyzer_create",
+        arg_count=0,
+        restype=ctypes.c_void_p,
+    ),
+    FunctionSignature(
+        name="mouse_display_analyzer_destroy",
+        arg_count=1,
+        restype=None,
+        argtypes=[ctypes.c_void_p],
+    ),
+    FunctionSignature(
+        name="mouse_rgb_to_gray",
+        arg_count=5,
+        restype=ctypes.c_int,
+        argtypes=[
+            ctypes.c_void_p,
+            ctypes.POINTER(ctypes.c_uint8),
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_uint8),
+        ],
+    ),
+    FunctionSignature(
+        name="mouse_detect_edges",
+        arg_count=7,
+        restype=ctypes.c_int,
+        argtypes=[
+            ctypes.c_void_p,
+            ctypes.POINTER(ctypes.c_uint8),
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_uint8,
+            ctypes.c_uint8,
+            ctypes.POINTER(ctypes.c_uint8),
+        ],
+    ),
+    FunctionSignature(
+        name="mouse_match_template",
+        arg_count=9,
+        restype=ctypes.c_float,
+        argtypes=[
+            ctypes.c_void_p,
+            ctypes.POINTER(ctypes.c_uint8),
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_uint8),
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_float,
+            ctypes.POINTER(ctypes.c_int),
+            ctypes.POINTER(ctypes.c_int),
+        ],
+    ),
+    # ── Result combiner ──────────────────────────────
+    FunctionSignature(
+        name="mouse_combine_results",
+        arg_count=16,
+        restype=ctypes.c_int,
+        argtypes=[
+            ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_int,
+            ctypes.c_float, ctypes.c_int,
+            ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_int,
+            ctypes.c_float, ctypes.c_int,
+            ctypes.c_int,
+            ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
+            ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_int),
+        ],
+    ),
+    FunctionSignature(
+        name="mouse_backend_name",
+        arg_count=1,
+        restype=ctypes.c_char_p,
+        argtypes=[ctypes.c_int],
+        required=False,
+    ),
+]
+
+
+def _find_mouse_core_library() -> Path | None:
+    """Locate the mouse_core shared library on this platform."""
+    import sys
+
+    candidates: list[Path] = []
+
+    # -- Windows --
+    if sys.platform == "win32":
+        names = ["mouse_core.dll", "mouse_core.pyd"]
+    # -- macOS --
+    elif sys.platform == "darwin":
+        names = ["libmouse_core.dylib", "libmouse_core.so", "mouse_core.so"]
+    # -- Linux --
+    else:
+        names = ["libmouse_core.so", "mouse_core.so"]
+
+    # Search paths: same dir as this file, then build dirs
+    here = Path(__file__).resolve().parent.parent.parent  # up to Python/
+    search_dirs = [
+        here,
+        here.parent / "build",                # Mouse/build/
+        here.parent / "build" / "Release",    # Mouse/build/Release/
+        here.parent / "build" / "Debug",      # Mouse/build/Debug/
+        here.parent / "target" / "release",   # Rust target (future)
+    ]
+
+    for d in search_dirs:
+        if not d.exists():
+            continue
+        for name in names:
+            candidate = d / name
+            if candidate.exists():
+                return candidate.resolve()
+
+    return None
+
+
+def setup_mouse_core(loader: NativeModuleLoader | None = None) -> NativeModule | None:
+    """Register and load the mouse_core native module.
+
+    Call this once during Python startup to wire the C++/CUDA/ASM
+    backend into the pipeline.  Returns the loaded module, or None
+    if the shared library wasn't found (non-fatal — Python fallbacks
+    will be used instead).
+
+    Usage::
+
+        >>> from modules.externalLangMods.LOADER import (
+        ...     NativeModuleLoader, setup_mouse_core,
+        ... )
+        >>> loader = NativeModuleLoader()
+        >>> mouse_core = setup_mouse_core(loader)
+        >>> if mouse_core and mouse_core.is_loaded:
+        ...     port = mouse_core.call("mouse_get_stream_port")
+
+    Args:
+        loader: An existing ``NativeModuleLoader``.  If ``None``, a
+            new one is created.
+
+    Returns:
+        The loaded ``NativeModule``, or ``None`` if the library was
+        not found.
+    """
+    if loader is None:
+        loader = NativeModuleLoader()
+
+    lib_path = _find_mouse_core_library()
+    if lib_path is None:
+        logger.info("mouse_core native library not found — using Python fallbacks")
+        return None
+
+    meta = ModuleMetadata(
+        name="mouse_core",
+        path=lib_path,
+        expected_exports=_MOUSE_CORE_EXPORTS,
+        version="0.1.0",
+    )
+    loader.register(meta)
+
+    try:
+        mod = loader.load("mouse_core")
+    except ModuleLoadError as exc:
+        logger.warning("Failed to load mouse_core: %s", exc)
+        return None
+
+    return mod

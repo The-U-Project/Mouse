@@ -18,6 +18,8 @@ dependencies = [
     # Pure-Python deps (uv installs these)
     "pillow>=11.0",
     "mss>=10.0",
+    "pyautogui>=0.9",
+    "openai>=1.0",
 ]
 
 [project.optional-dependencies]
