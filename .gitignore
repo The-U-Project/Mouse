@@ -95,6 +95,9 @@ ehthumbs.db
 .agentcache/
 .ai_cache/
 
+# ── Demos ───────────────────────────────────
+*demo*
+
 # ── Conda ───────────────────────────────────
 .conda/
 
