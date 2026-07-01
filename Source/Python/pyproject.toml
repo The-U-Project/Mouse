@@ -1,8 +1,12 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "mouse"
 version = "0.1.0"
 description = "Mouse — A simple computer vision cursor"
-readme = "README.md"
+readme = "README.txt"
 authors = [{ name = "MCHIGM" }]
 license = "MIT"
 requires-python = ">=3.14"
@@ -11,18 +15,17 @@ requires-python = ">=3.14"
 # mamba handles: numpy, opencv, onnxruntime (native compiles)
 # uv handles: everything else (lightning fast pip)
 dependencies = [
-    # Add pure-Python deps here (uv installs these)
-    # "pillow>=11.0",
-    # "pydantic>=2.0",
-    # "rich>=13.0",
+    # Pure-Python deps (uv installs these)
+    "pillow>=11.0",
+    "mss>=10.0",
 ]
 
 [project.optional-dependencies]
-# GPU / Computer Vision (mamba)
+# GPU / Computer Vision (mamba handles native compiles)
 cv = [
-    # "numpy>=2.0",
-    # "opencv-python>=4.10",
-    # "onnxruntime>=1.20",
+    "numpy>=2.0",
+    "opencv-python>=4.10",
+    # "onnxruntime>=1.20",  # uncomment when ONNX models are ready
 ]
 
 # Development (uv)
@@ -53,6 +56,13 @@ target-version = "py314"
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "C4"]
 ignore = []
 
+[tool.ruff.lint.per-file-ignores]
+# PascalCase module names are intentional in this project
+"**/KEEPER.py" = ["N999"]
+"**/WIKI.py" = ["N999"]
+"**/LIBRARIAN.py" = ["N999"]
+"**/CodingAI/__init__.py" = ["N999"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
@@ -71,3 +81,6 @@ warn_unused_configs = true
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "--strict-markers --tb=short"
+markers = [
+    "integration: tests that require a real display or hardware (skipped in CI)",
+]
