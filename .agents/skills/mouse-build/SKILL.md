@@ -10,17 +10,19 @@ Build all components of the Mouse computer vision cursor project.
 ## Quick Build
 
 ```bash
-# All platforms
-cd Source/Python && mamba run -n mouse python3 -c "print('Python OK')"
+# From repo root
 
-# Rust (macOS native)
-cd project-root && cargo build
+# Python (mamba env)
+mamba run -n mouse python3 -c "print('Python OK')"
 
-# Rust (Windows cross-compile)
-cd project-root && cargo build --target x86_64-pc-windows-msvc
+# Rust (native)
+cargo build
+
+# Rust (Windows target; cross-linking may require Windows/MSVC linker setup)
+cargo build --target x86_64-pc-windows-msvc
 
 # C++ (macOS)
-cd project-root && cmake -B build -G Ninja -S Source/C++ && cmake --build build
+cmake -B build -G Ninja -S Source/C++ && cmake --build build
 
 # C++ (Windows — run on Windows machine)
 cmake -B build -G "Visual Studio 17" -S Source/C++ && cmake --build build --config Release
