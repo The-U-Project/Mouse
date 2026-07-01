@@ -50,9 +50,10 @@
 ```
 Mouse/
 ├── src/                    # Core source (Rust, TypeScript, PHP/PHTML)
-│   ├── Cargo.toml          # Rust project configuration
-│   └── rust-toolchain.toml # Pinned Rust version + targets
-│
+│   ├── main.rs             # Rust entry point
+│   ├── helper.rs           # Rust helpers
+│   ├── main.ts             # TypeScript main
+│   └── index.phtml         # PHP template
 ├── Source/
 │   ├── Python/             # Main Python codebase
 │   │   ├── CodingAI/       # AI agent control for Python code
