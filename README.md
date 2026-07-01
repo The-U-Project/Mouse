@@ -83,7 +83,9 @@ Mouse/
 │   └── mouse-release/      # Update docs, commit, push, create PR
 │
 ├── AGENT_PROFILE.md        # General conventions & maintainer profile
-├── GETTING_STARTED.md       # Hands-on setup & development guide
+├── GETTING_STARTED.md      # Hands-on setup & development guide
+├── Cargo.toml              # Rust project config
+├── rust-toolchain.toml     # Rust toolchain channel + targets
 ├── Cargo.lock              # Rust dependency lock
 ├── .editorconfig           # Editor settings (UTF-8, indentation)
 ├── .env                    # Local environment variables (gitignored)
