@@ -21,8 +21,8 @@ The goal is to compare, combine, and learn from both approaches across two hardw
 
 | Platform | OS | CPU | GPU | Status |
 |----------|----|-----|-----|--------|
-| **Mac (Dev)** | macOS | Apple M4 Max (arm64) | Apple Silicon GPU | ✅ Active |
-| **PC** | Windows 10 Pro | Intel Xeon E3 (x86-64) | Nvidia 5000 (CUDA) | ✅ Active |
+| **Mac (Dev)** | macOS | Apple M4 Max (arm64) | Apple Silicon GPU | Active |
+| **PC** | Windows 10 Pro | Intel Xeon E3 (x86-64) | Nvidia 5000 (CUDA) | Active |
 
 ---
 
