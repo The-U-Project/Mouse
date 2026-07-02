@@ -36,6 +36,7 @@ dev = [
     "ruff>=0.9",
     "black>=24.0",
     "mypy>=1.14",
+    "playwright>=1.49",
 ]
 
 # Testing

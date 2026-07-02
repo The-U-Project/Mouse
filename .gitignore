@@ -105,6 +105,11 @@ ehthumbs.db
 vendor/
 composer.lock
 
+# ── Playwright ──────────────────────────────
+.playwright/
+playwright-report/
+test-results/
+
 # ── Data ────────────────────────────────────
 Data/*
 !Data/.gitkeep
